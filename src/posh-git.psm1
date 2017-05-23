@@ -92,7 +92,16 @@ if ($ForcePoshGitPrompt -or !$currentPromptDef -or ($currentPromptDef -eq $defau
         Write-Prompt $currentPath
 
         # Write the Git status summary information
-        Write-VcsStatus
+        if($currentPath.StartsWith("D:\")) {
+            $s = $global:GitPromptSettings
+            $branch = git rev-parse --abbrev-ref HEAD
+            Write-Prompt $s.BeforeText -BackgroundColor $s.BeforeBackgroundColor -ForegroundColor $s.BeforeForegroundColor
+            Write-Prompt $branch -BackgroundColor $s.BranchBackgroundColor -ForegroundColor $s.BranchForegroundColor
+            Write-Prompt $s.AfterText -BackgroundColor $s.AfterBackgroundColor -ForegroundColor $s.AfterForegroundColor
+
+        } else {
+            Write-VcsStatus
+        }
 
         # If stopped in the debugger, the prompt needs to indicate that in some fashion
         $hasInBreakpoint = [runspace]::DefaultRunspace.Debugger | Get-Member -Name InBreakpoint -MemberType property
